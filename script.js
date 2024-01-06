@@ -1,5 +1,3 @@
-let ymaps = null;
-
 async function loadYandexMapAPI () {
   return new Promise((resolve, reject) => {
     const script = document.createElement('script');
