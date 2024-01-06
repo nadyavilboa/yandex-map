@@ -64,17 +64,16 @@ async function initMap() {
 
   const {YMap, YMapDefaultSchemeLayer, ZoomControl} = ymaps3;
 
-  const map = new YMap(
+  const map = new ymaps.Map(
     mapElement,
     {
-      location: {
-        // центр карты
-        center: [18.75, 50],
-        // масштаб
-        zoom: 10
-      }
+      // центр карты
+      center: [18.75, 50],
+      // масштаб
+      zoom: 10
     }
   );
+  
   map.addChild(new YMapDefaultSchemeLayer());
   
   // Добавляет элементы управления zoom
