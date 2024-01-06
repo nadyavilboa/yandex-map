@@ -2,9 +2,10 @@ let ymaps = null;
 
 async function loadYandexMapAPI () {
   return new Promise((resolve, reject) => {
-    ymaps.ready(() => {
-      resolve(ymaps);
-    });
+    const script = document.createElement('script');
+    script.src = 'https://api-maps.yandex.ru/2.1/?apikey=8c50b945-d9f7-4bf3-96f7-49dc0772c9bf&lang=ru_RU';
+    script.onload = () => resolve();
+    document.head.appendChild(script);
   });
 }
 
