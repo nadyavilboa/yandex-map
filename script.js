@@ -78,7 +78,7 @@ async function initMap() {
   map.addChild(new YMapDefaultSchemeLayer());
   
   // Добавляет элементы управления zoom
-  map.controls.add(new ZoomControl(), {top: 10, right: 10});
+  map.controls.add(new ymaps.control.ZoomControl(), {top: 10, right: 10});
   
   // отключает прокрутку карты
   map.behaviors.disable('scrollZoom');
