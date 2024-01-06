@@ -1,4 +1,10 @@
-ymaps.ready(initMap);
+async function loadYandexMapAPI () {
+  return new Promise((resolve, reject) => {
+    ymaps.ready(() => {
+      resolve(ymaps);
+    });
+  });
+}
 
 function initMap() {
   var map = new ymaps.Map('map', {
@@ -9,4 +15,10 @@ function initMap() {
   map.controls.add('zoomControl', {
     position: {top: 10, right: 10}
   });
+}
+
+const ymaps = await loadYandexMapAPI();
+
+if (yamps) {
+  initMap();
 }
