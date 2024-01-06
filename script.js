@@ -1,3 +1,5 @@
+let ymaps = null;
+
 async function loadYandexMapAPI () {
   return new Promise((resolve, reject) => {
     ymaps.ready(() => {
@@ -7,7 +9,7 @@ async function loadYandexMapAPI () {
 }
 
 async function initializeMap() {
-  const ymaps = await loadYandexMapAPI();
+  ymaps = await loadYandexMapAPI();
 
   if (ymaps) {
     var map = new ymaps.Map('map', {
