@@ -24,3 +24,28 @@
   outline: none;
   transform: translateZ(0);
 }
+
+.company-marker {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 64px;
+  background-color: #fff;
+  border: 2px solid #1C1263;
+  position: relative;
+}
+
+.company-marker:after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  z-index: 1;
+  border-top: 10px solid #1C1263;
+  border-right: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 4px solid transparent;
+  transform: translate(-50%, calc(100% - 1px));
+}
