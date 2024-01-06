@@ -23,4 +23,4 @@ async function initializeMap() {
   }
 }
 
-initializeMap();
+document.addEventListener("DOMContentLoaded", (event) => initializeMap());
