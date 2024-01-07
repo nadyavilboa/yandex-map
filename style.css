@@ -73,6 +73,7 @@
 
 .partner-marker._active .partner-marker__tooltip {
   opacity: 1;
+  z-index: 800;
 }
 
 .partner-marker__pin {
@@ -100,4 +101,53 @@
   border-bottom: 4px solid transparent;
   border-left: 4px solid transparent;
   transform: translate(-50%, calc(100% - 1px));
+}
+
+/* тоолтип */
+.partner-marker__tooltip {
+  position: absolute;
+  top: -1rem;
+  left: 1.8rem;
+  width: max-content;
+  max-width: 250px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  opacity: 0;
+  transform: translate(-50%, -100%);
+  pointer-events: none;
+  transition: all .3s ease;
+  color: #1C1263;
+  font-family: TT Firs Neue;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%;
+  z-index: 750;
+}
+
+.partner-marker__tooltip-title {
+  margin-bottom: 4px;
+  font-weight: bolder;
+}
+
+.partner-marker__tooltip-text {
+  margin-bottom: 4px;
+  font-size: 12px;
+}
+
+.partner-marker__tooltip-info {
+  display: flex;
+  align-items: center;
+}
+
+.partner-marker__tooltip-icon {
+  margin-right: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  height: 100%;
+  min-height: 24px;
 }

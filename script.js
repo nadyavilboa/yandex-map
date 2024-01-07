@@ -4,6 +4,12 @@ const mapElement = document.getElementById('map');
 let companyObjectManager = null;
 let partnersObjectManager = null;
 
+// активные партнерские маркеры
+let activePartner = {};
+
+// партнерские маркеры - коллекция
+let partnerMarkersCollection = {};
+
 /* в реальном проекте данные маркеров, 
 логотипа приходят из базы */
 
@@ -19,7 +25,7 @@ const company = {
 const partners = [
   {
     id: 0,
-    coords: [55.8035, 37.5349],
+    coords: [55.8035, 37.5449],
     icon_content: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_316_2)"><path d="M15.5364 12.225C15.7952 12.2032 16.1274 12.225 16.4222 12.2475C16.6524 12.264 16.8752 12.2797 17.0837 12.2797C17.4902 12.2797 18.0827 12.228 18.5312 11.7795L23.7812 6.52946C24.0744 6.23621 24.0744 5.76221 23.7812 5.46896L18.5312 0.218961C18.2379 -0.0742891 17.7639 -0.0742891 17.4707 0.218961L12.2207 5.46896C11.3312 6.35846 11.2502 7.27346 11.3214 8.00921L4.28044 0.969711C4.18819 0.877461 3.69094 0.416961 2.97244 0.416961C2.65294 0.416961 2.17669 0.512961 1.71994 0.969711C1.48144 1.20821 1.37119 1.55921 1.38319 2.04221C1.43119 3.95171 3.60019 9.46271 7.43344 13.2562L0.219937 20.4697C-0.0733125 20.763 -0.0733125 21.237 0.219937 21.5302L2.46994 23.7802C2.76319 24.0735 3.23719 24.0735 3.53044 23.7802L12.0002 15.3105L20.4699 23.7802C20.6162 23.9265 20.8082 24 21.0002 24C21.1922 24 21.3842 23.9265 21.5304 23.7802L23.7804 21.5302C24.0737 21.237 24.0737 20.763 23.7804 20.4697L15.5364 12.225ZM12.8867 8.35871C12.7562 7.59971 12.7059 7.10546 13.2804 6.53021L18.0002 1.81046L19.0794 2.88971L15.4847 6.48446C15.3384 6.63071 15.3384 6.86846 15.4847 7.01471C15.5582 7.08821 15.6542 7.12496 15.7502 7.12496C15.8462 7.12496 15.9422 7.08821 16.0157 7.01546L19.6104 3.42071L20.5802 4.39046L16.9854 7.98521C16.8392 8.13146 16.8392 8.36921 16.9854 8.51546C17.0582 8.58821 17.1542 8.62496 17.2502 8.62496C17.3462 8.62496 17.4422 8.58821 17.5157 8.51546L21.1104 4.92071L22.1897 5.99996L17.4699 10.7197C17.4632 10.7257 17.4002 10.7805 17.0829 10.7805C16.9097 10.7805 16.7237 10.7655 16.5324 10.752C16.2902 10.734 16.0389 10.716 15.7892 10.716C15.2244 10.716 14.3964 10.794 13.7199 11.4697L12.5304 10.2802C13.1154 9.69521 12.9879 8.95346 12.8867 8.35871ZM3.00019 22.1895L1.81069 21L9.03919 13.7715C9.05194 13.7587 9.05644 13.7407 9.06844 13.7272C9.22594 13.8555 9.38494 13.98 9.54694 14.1007C9.67819 14.199 9.83944 14.25 10.0037 14.25H10.9397L3.00019 22.1895ZM21.0002 22.1895L12.3107 13.5H9.99469C5.52919 10.173 2.79619 3.31646 2.88019 1.94846C2.91094 1.92896 2.94319 1.91621 2.97244 1.91621C3.05719 1.91621 3.17569 1.98971 3.21994 2.03021L22.1897 21L21.0002 22.1895Z" fill="#1C1263"/></g><defs><clipPath id="clip0_316_2"><rect width="24" height="24" fill="white"/></clipPath></defs></svg>',
     name: 'Ежекафе',
     text: 'Сезонное меню «Лесные истории»',
@@ -28,7 +34,7 @@ const partners = [
   },
   {
     id: 1,
-    coords: [55.8078, 37.5123],
+    coords: [55.8178, 37.5223],
     icon_content: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_317_41)"><path d="M23.9946 13.9873C23.8642 12.7085 21.445 11.8245 17.9287 11.5571C17.5925 9.58618 17.2036 7.31199 17.0901 6.69385C16.8293 5.27808 14.9646 4.48632 13.5795 5.5073C12.853 6.04271 12.2033 6.08077 11.8591 6.08077C11.5148 6.08077 11.1325 6.15694 10.1386 5.5073C8.69868 4.5654 6.88888 5.27804 6.62886 6.69385C6.48969 7.44896 5.94036 10.6709 5.57928 12.7971C2.11935 13.7727 -0.126997 15.146 0.00556566 16.4402C0.204784 18.3914 5.73679 19.4248 12.3608 18.7473C18.9863 18.0698 24.1945 15.9392 23.9946 13.9873ZM6.20113 14.4539L6.58344 12.4661C6.58344 12.4661 13.3891 13.5361 17.2123 11.5484L17.5947 13.2308C17.5947 13.2308 13.4653 15.8301 6.20113 14.4539Z" fill="#1C1263"/></g><defs><clipPath id="clip0_317_41"><rect width="24" height="24" fill="white"/></clipPath></defs></svg>',
     name: 'Ежешляпная',
     text: 'Стань заметнее в лесу',
@@ -37,7 +43,7 @@ const partners = [
   },
   {
     id: 2,
-    coords: [55.8038, 37.5119],
+    coords: [55.8038, 37.5219],
     icon_content: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M16.5 16C13.4624 16 11 13.5376 11 10.5C11 7.46243 13.4624 5 16.5 5C19.5376 5 22 7.46243 22 10.5C22 12.0347 21.3714 13.4227 20.3576 14.4203" stroke="#1C1263" stroke-width="1.5" stroke-linecap="round"></path> <path d="M16.5 20V16M16.5 20H19.5M16.5 20H13.5" stroke="#1C1263" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M2 11V10.25C1.58579 10.25 1.25 10.5858 1.25 11H2ZM8 11H8.75C8.75 10.5858 8.41421 10.25 8 10.25V11ZM8.75 17C8.75 16.5858 8.41421 16.25 8 16.25C7.58579 16.25 7.25 16.5858 7.25 17H8.75ZM7.25 13C7.25 13.4142 7.58579 13.75 8 13.75C8.41421 13.75 8.75 13.4142 8.75 13H7.25ZM2 11.75H8V10.25H2V11.75ZM2.75 17V11H1.25V17H2.75ZM5 19.25C3.75736 19.25 2.75 18.2426 2.75 17H1.25C1.25 19.0711 2.92893 20.75 5 20.75V19.25ZM7.25 17C7.25 18.2426 6.24264 19.25 5 19.25V20.75C7.07107 20.75 8.75 19.0711 8.75 17H7.25ZM7.25 11V13H8.75V11H7.25Z" fill="#1C1263"></path> <path d="M3 11H7V5.61799C7 4.87461 6.21769 4.39111 5.55279 4.72356L3.55279 5.72356C3.214 5.89295 3 6.23922 3 6.61799V11Z" stroke="#1C1263" stroke-width="1.5"></path> </g></svg>',
     name: 'Ежемакияж',
     text: 'Подготовим к ежедискотеке, ежесвиданию или концерту',
@@ -46,7 +52,7 @@ const partners = [
   },
   {
     id: 3,
-    coords: [55.8088, 37.5139],
+    coords: [55.8088, 37.5039],
     icon_content: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_318_51)"><path d="M15.75 9.15C13.2 9.15 10.725 8.85 8.55 8.25C8.4 9.225 8.25 10.275 8.25 11.325C8.25 17.925 11.625 23.25 15.75 23.25C19.875 23.25 23.25 17.925 23.25 11.325C23.25 10.275 23.175 9.225 22.95 8.25C20.775 8.85 18.3 9.15 15.75 9.15Z" stroke="#1C1263" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M15.75 18.075C14.625 18.075 13.575 17.775 12.75 17.25C12.9 18.9 14.175 20.25 15.75 20.25C17.325 20.25 18.6 18.9 18.75 17.25C17.925 17.775 16.875 18.075 15.75 18.075Z" stroke="#1C1263" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M11.25 15C11.25 14.175 11.925 13.5 12.75 13.5C13.575 13.5 14.25 14.175 14.25 15" stroke="#1C1263" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M17.25 15C17.25 14.175 17.925 13.5 18.75 13.5C19.575 13.5 20.25 14.175 20.25 15" stroke="#1C1263" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 9.15C15.525 7.575 15.75 5.775 15.75 3.9C15.75 2.85 15.675 1.8 15.45 0.825C13.2 1.425 10.8 1.725 8.25 1.725C5.7 1.725 3.225 1.35 1.05 0.75C0.825 1.725 0.75 2.775 0.75 3.825C0.75 10.425 4.125 15.75 8.25 15.75C8.4 15.75 8.625 15.75 8.775 15.75" stroke="#1C1263" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.25 11.175C7.125 11.175 6.075 11.475 5.25 12C5.4 10.35 6.675 9 8.25 9" stroke="#1C1263" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.75 5.25C3.75 6.075 4.425 6.75 5.25 6.75C6.075 6.75 6.75 6.075 6.75 5.25" stroke="#1C1263" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.75 5.25C9.75 6.075 10.425 6.75 11.25 6.75C12.075 6.75 12.75 6.075 12.75 5.25" stroke="#1C1263" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/></g><defs><clipPath id="clip0_318_51"><rect width="24" height="24" fill="white"/></clipPath></defs></svg>',
     name: 'Ежетеатр',
     text: 'Премьера «Колючий вечер», скидка сове',
@@ -64,7 +70,7 @@ const partners = [
   },
   {
     id: 5,
-    coords: [55.8072, 37.5162],
+    coords: [55.7972, 37.5062],
     icon_content: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd" clip-rule="evenodd" d="M11 5C9.89543 5 9 5.89543 9 7V9H7C5.89543 9 5 9.89543 5 11V13C5 14.1046 5.89543 15 7 15H9V17C9 18.1046 9.89543 19 11 19H13C14.1046 19 15 18.1046 15 17V15H17C18.1046 15 19 14.1046 19 13V11C19 9.89543 18.1046 9 17 9H15V7C15 5.89543 14.1046 5 13 5H11ZM11 7H13V9.5C13 10.3284 13.6716 11 14.5 11H17V13H14.5C13.6716 13 13 13.6716 13 14.5V17H11V14.5C11 13.6716 10.3284 13 9.5 13H7V11H9.5C10.3284 11 11 10.3284 11 9.5V7Z" fill="#1C1263"></path> <path fill-rule="evenodd" clip-rule="evenodd" d="M20 1C21.6569 1 23 2.34315 23 4V20C23 21.6569 21.6569 23 20 23H4C2.34315 23 1 21.6569 1 20V4C1 2.34315 2.34315 1 4 1H20ZM20 3C20.5523 3 21 3.44772 21 4V20C21 20.5523 20.5523 21 20 21H4C3.44772 21 3 20.5523 3 20V4C3 3.44772 3.44772 3 4 3H20Z" fill="#1C1263"></path> </g></svg>',
     name: 'Ежеаптека',
     text: 'Мазь из шишек для крепости иголок',
@@ -118,12 +124,12 @@ function loadYandexMapAPI(callback) {
 }
 
 // возвращает значение объекта по найденным ключам
-function getObjByKeys (obj, keys) { 
-  keys.reduce((acc, key) => {
-    if (acc && acc.hasOwnProperty(key)) {
+function getObjByKeys(obj, keys) { 
+  return keys.reduce((acc, key) => {
+    if (acc && Object.prototype.hasOwnProperty.call(acc, key)) {
       return acc[key];
     } else {
-      return false;
+      return undefined;
     }
   }, obj);
 }
@@ -169,13 +175,69 @@ function partnerMarkerTemplate (ymaps, partner) {
   }
 
   const template = ymaps.templateLayoutFactory.createClass(`
-    <div class="partner-marker js-partner-marker">
+    <div class="partner-marker js-partner-marker" id='${partner.id}'>
       <div class="partner-marker__pin">
         ${partner.icon_content ? partner.icon_content : ''}
       </div>
+
+      <div class="partner-marker__tooltip">
+        <div class="partner-marker__tooltip-title">
+          ${partner.name ? partner.name : ''}
+        </div>
+
+        <div class="partner-marker__tooltip-text">
+          ${partner.text ? partner.text : ''}
+        </div>
+
+        <div class="partner-marker__tooltip-info">
+          <span class="partner-marker__tooltip-icon">
+            ${partner.movement_icon_content ? partner.movement_icon_content : ''}
+          </span>
+          <span>
+            ${partner.movement_time ? partner.movement_time : ''}
+          </span>
+        </div>
+      </div>
     </div>`, {
       build: function() {
+        // Сначала вызовем метод build родительского класса
         template.superclass.build.call(this);
+        
+        // Получаем ссылку на DOM элемент маркера
+        const element = this.getParentElement().getElementsByClassName('js-partner-marker')[0];
+        console.log('element', element);
+
+        // Теперь у нас есть доступ к элементу, и мы можем применить к нему изменения
+        const build = () => {
+          const data = this.getData();
+          console.log('data', data);
+          if (!data) {
+            return;
+          }
+
+          const options = getObjByKeys(data, [
+            'options',
+            '_parent',
+            '_parent',
+            '_parents',
+            0,
+            '_options',
+          ]);
+
+          if (!options) {
+            return;
+          }
+
+          console.log('options', options);
+
+          const active = options.active;
+
+          active
+            ? element.classList.add('_active')
+            : element.classList.remove('_active');
+        };
+
+        build();
       },
   });
 
@@ -302,20 +364,101 @@ function addPartners () {
   // добавление партнерских маркеров на карту
   map.geoObjects.add(partnersObjectManager);
 
+  // добавление функционала событий мыши
   partnersObjectManager.objects.events
     .add(['mouseenter'], e => {
-
+      onProjectMarkerMouseEnter(e.get('objectId'));
     })
     .add(['mouseleave'], e => {
-
+      onProjectMarkerMouseLeave(e.get('objectId'));
     })
     .add('click', e => {
-
+      onProjectMarkerMouseClick(e.get('objectId'));
     });
 }
 
-function activateMarkers () {
+// наведение мыши на маркер
+function onProjectMarkerMouseEnter (id) {
+  partnersObjectManager.objects.each(o => {
+    partnersObjectManager.objects.setObjectOptions(o.id, {
+      active: false,
+      zIndex: 750,
+    });
+  });
 
+  partnerMarkersCollection.forEach(marker => {
+    marker.classList.remove('_active');
+  });
+
+  partnersObjectManager.objects.setObjectOptions(id, {
+    active: true,
+    zIndex: 800,
+  });
+
+  console.log(partnerMarkersCollection);
+
+  partnerMarkersCollection.forEach(marker => {
+    if (Number(marker.id) === id) {
+      marker.classList.add('_active');
+    }
+  })
+}
+
+// мышь убирают с маркера
+function onProjectMarkerMouseLeave (id) {
+  partnersObjectManager.objects.setObjectOptions(id, {
+    active: false,
+    zIndex: 750,
+  });
+
+  partnerMarkersCollection.forEach(marker => {
+    marker.classList.remove('_active');
+  });
+}
+
+// клик по маркеру - мобильная версия
+function onProjectMarkerMouseClick(id) {
+  const wasActive = id === (activePartner && activePartner.id);
+  activePartner = wasActive ? {} : partners.find(p => p.id === id);
+  
+  partners.forEach(partner => {
+    const isActive = partner.id === (activePartner && activePartner.id);
+    partnersObjectManager.objects.setObjectOptions(partner.id, {
+      active: isActive,
+    });
+  });
+
+  partnerMarkersCollection.forEach(marker => {
+    if (Number(marker.id) === id) {
+      marker.classList.toggle('_active');
+    }
+  })
+}
+
+function activateMarkers () {
+  if (!map || !partnersObjectManager) {
+    return;
+  }
+
+  map.events.add('boundschange', function () {
+    // Обновляем коллекцию маркеров после изменения границ карты, когда все маркеры уже должны быть добавлены на карту
+    partnerMarkersCollection = document.querySelectorAll('.js-partner-marker');
+  });
+
+  if (partners.length) {
+    setTimeout(() => {
+      map.setBounds(map.geoObjects.getBounds(), {
+        checkZoomRange: true,
+        zoomMargin: 24,
+      }).then(() => {
+        if (map.getZoom() > 13) {
+          map.setZoom(13);
+        }
+      });
+    }, 0);
+  } else {
+    return;
+  }
 }
 
 // создает карту
@@ -326,7 +469,7 @@ function initializeMap () {
         // центр карты
         center: [55.8058, 37.5149],
         // масштаб
-        zoom: 14
+        zoom: 13
       });
 
       if (map) {
@@ -351,6 +494,7 @@ function initializeMap () {
   });
 }
 
+// инициализация карты
 let map = null;
 
 initializeMap();
