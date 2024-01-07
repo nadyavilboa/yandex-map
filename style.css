@@ -25,6 +25,7 @@
   transform: translateZ(0);
 }
 
+/* маркер компании */
 .company-marker {
   display: flex;
   justify-content: center;
