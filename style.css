@@ -33,12 +33,63 @@
   width: 48px;
   height: 48px;
   border-radius: 64px;
-  background-color: #fff;
+  background-color: #1C1263;
   border: 2px solid #1C1263;
   position: relative;
 }
 
 .company-marker:after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  z-index: 1;
+  border-top: 10px solid #1C1263;
+  border-right: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 4px solid transparent;
+  transform: translate(-50%, calc(100% - 1px));
+}
+
+/* кластер */
+.cluster-marker {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid #1C1263;
+  background-color: #fff;
+  position: relative;
+  font-weight: bold;
+  color: #1C1263;
+}
+
+/* партнерский маркер */
+.partner-marker {
+  position: relative;
+}
+
+.partner-marker._active .partner-marker__tooltip {
+  opacity: 1;
+}
+
+.partner-marker__pin {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid #1C1263;
+  background-color: #fff;
+  transition: all .3s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.partner-marker__pin:after {
   content: "";
   position: absolute;
   bottom: -2px;
