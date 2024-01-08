@@ -118,7 +118,7 @@ const partners = [
 // загружает API Яндекс карт
 function loadYandexMapAPI(callback) {
   const script = document.createElement('script');
-  script.src = 'https://api-maps.yandex.ru/2.1/?apikey=8c50b945-d9f7-4bf3-96f7-49dc0772c9bf&lang=ru_RU';
+  script.src = 'https://api-maps.yandex.ru/2.1/?apikey={YOUR_API_KEY}&lang=ru_RU';
   script.onload = callback;
   document.body.appendChild(script);
 }
